@@ -1,0 +1,390 @@
+\documentclass[letterpaper]{book}
+\PassOptionsToPackage{usenames,dvipsnames,svgnames,table,xcdraw}{xcolor}
+\PassOptionsToPackage{dvipsnames,svgnames,table,xcdraw}{enumitems}
+
+\input{Defines/definesPackages}
+\input{Defines/definesCommands}
+\input{Defines/definesJuliaCodeCell}
+%\parindent
+
+\makeatletter
+\renewcommand{\frontmatter}{\cleardoublepage\@mainmatterfalse}
+\renewcommand{\mainmatter}{\cleardoublepage\@mainmattertrue}
+\makeatother
+
+\title{Notes for Computational Linear Algebra\thanks{Inspired by Prof. Chad Jenkins}}
+\date{}
+\author{Jessy Grizzle\\ Robotics Institute, University of Michigan, Ann Arbor
+\and Content contributed by Maani, Tribhi, Miley, Madhav, Kira, Michael, and Bruce}
+
+%\doublespacing
+
+
+
+\begin{document}
+%\maketitle
+\newtheorem{example}{Example}
+\numberwithin{example}{chapter}
+
+
+
+
+
+\section{Lecture 03}
+
+\begin{tcolorbox}[sharp corners, colback=green!30, colframe=green!80!blue, title=\textbf{\Large Enough Facts about the Determinant to Get Us Going}]
+\begin{center}
+\begin{minipage}{.95\textwidth}
+
+
+\begin{enumerate}[label={\bf Fact~~}{\bf \arabic*}]
+\setlength{\itemsep}{.5cm}
+\Large
+
+\item \label{item:determinantFact0}  The determinant of a square matrix $A$ is a real number, denoted $\det(A)$.
+
+    \item \label{item:determinantFact1} A square system of linear equations (i.e.,  $n$ equations and $n$ unknowns), 
+    $Ax=b,$
+    has a unique solution $x$ for any $n\times 1$ vector $b$ if, and only if, $\det(A) \neq 0.$
+    
+     \item When $\det(A)=0$, the set of linear equations $Ax=b$ may have either no solution or an infinite number of solutions. To determine which case applies (and to be clear, only one case can apply), depends on how ``$b$ is related to $A$'', which is another way of saying that we will have to address this later in the course. 
+     
+     \item The determinant of the $1 \times 1$ matrix $A=[a]$ is $\det(A):=a$.
+     
+    \item The determinant of the $2 \times 2$ square matrix 
+    $A=\left[\begin{array}{cc} a & b \\ c & d \end{array} \right]$ is
+  $\det(A):= a d - bc.$
+
+ 
+\end{enumerate}
+
+\end{minipage}
+\end{center}
+\end{tcolorbox}
+
+\newpage
+\section{Lecture 14}
+
+\begin{tcolorbox}[title={\bf \Large Properties of the Dot (or Inner) Product}]
+\Large 
+For vectors $v_1, v_2, v_3 \in \real^n$ and real numbers $\alpha_1$ and $\alpha_2$, the following properties hold:
+
+\vspace*{1cm}
+
+\begin{itemize}
+\setlength{\itemsep}{.3cm}
+    \item $v_1 \bullet v_2 = v_2 \bullet v_1$ 
+    \begin{align*}
+       \textbf{Because:}~~ v_1 \bullet v_2 &: = v_1^\top v_2   \\
+         &~= (v_1^\top v_2)^\top ~~\text{a real number}\\
+        &~=v_2^\top v_1\\
+         &~ =:  v_2 \bullet v_1 
+    \end{align*}
+
+    \item $v_1 \bullet (v_2 + v_3) = v_1 \bullet v_2 + v_1 \bullet v_3$ 
+    \begin{align*}
+       \textbf{Because:}~~ v_1 \bullet (v_2 + v_3)& : = v_1^\top (v_2 + v_3)  \\
+        &~=v_1^\top v_2 + v_1^\top v_3 \\
+        &~=: v_1 \bullet v_2 + v_1 \bullet v_3
+    \end{align*}
+        \item $(v_1 +v_2) \bullet  v_3 = v_1 \bullet v_3+ v_2 \bullet v_3$ 
+    \begin{align*}
+       \textbf{Because:}~~ (v_1 + v_2)\bulletv_3 & : = (v_1 + v_2)^\top v_3  \\
+        &~=(v_1^\top  + v_2^\top) v_3 \\
+         &~=v_1^\top v_3   + v_2^\top v_3 \\
+         &~ =:  v_1 \bullet v_3 + v_2 \bullet v_3
+    \end{align*}
+                \item $(\alpha_1 v_1) \bullet  v_2 = \alpha_1 (v_1 \bullet v_2) = v_1 \bullet (\alpha v_2)$ 
+    \begin{align*}
+       \textbf{Because:}~~ (\alpha_1 v_1)\bullet v_2 & : = (\alpha_1 v_1)^\top v_2  \\
+        &~=(\alpha_1 v_1^\top ) v_2 \\
+       &~=\alpha_1 (v_1^\top v_2 )  \\
+         &~ =:  \alpha_1 (v_1 \bullet v_2) \\
+         & \text{\bf and} \\
+         &~=  \alpha_1 (v_1^\top v_2 )  \\
+         &~=  v_1^\top( \alpha_1 v_2 )   \\
+         &~ = : v_1 \bullet (\alpha v_2)
+    \end{align*}
+    %         \item $(\alpha_1 v_1 + \alpha_2 v_2) \bullet  v_3 = \alpha_1 v_1 \bullet v_3+ \alpha_2 v_2 \bullet v_3$ 
+    % \begin{align*}
+    %   \textbf{Because:}~~ (\alpha_1 v_1 + \alpha_2 v_2)\bullet v_3& : = \alpha_1 v_1 + \alpha_2 v_2)^\top v_3  \\
+    %     &~=(\alpha_1 v_1^\top  + \alpha_2 v_2^\top) v_3 \\
+    %      = &\alpha_1 v_1^\top v_3   + \alpha_2 v_2^\top v_3 \\
+    %     &~=: \alpha_1 v_1 \bullet v_3 + \alpha_2 v_2 \bullet v_3
+    % \end{align*}
+\end{itemize}
+
+\end{tcolorbox}
+
+\section{FAMU Talk}
+
+\Large
+
+\begin{equation} \label{eq:Desired_Footplacement}
+    p^{x~{\rm des}}_{\rm \bf sw \to CoM}(T_k^-,t) :=\frac{L^{y ~{\rm des}} - \cosh(\ell T)\widehat{L}(T_k^-,t)}{mH \ell \sinh(\ell T)}.
+\end{equation}
+
+\vspace*{.5cm}
+
+\noindent \textbf{Remark:} Instead of the deadbeat control \eqref{eq:Desired_Footplacement}, it is possible to asymptotically approach a desired value of $L^{\rm des}$ with the control law
+\begin{equation} \label{eq:Desired_FootplacementAsymptotic}
+\begin{aligned}
+    p^{x~{\rm des}}_{\rm \bf sw \to CoM}(T_k^-,t) &:=\frac{1 - \alpha }{mH \ell \sinh(\ell T)}L^{y ~{\rm des}} \\
+   & +  \frac{\alpha - \cosh(\ell T)}{mH \ell \sinh(\ell T)} \widehat{L}(T_k^-,t),
+    \end{aligned}
+\end{equation}
+which achieves
+\begin{equation}
+( L^{y~{\rm des}}-\widehat{L}(T_{k+1}^-,t))   = \alpha (L^{y~{\rm des}}-\widehat{L}(T_{k}^-,t))
+\end{equation}
+% \begin{equation}
+% ( L^{y~{\rm des}}(T_{k+1}^-)-\widehat{L}(T_{k+1}^-,t))   = \alpha (L^{y~{\rm des}}(T_{k+1}^-)-\widehat{L}(T_{k}^-,t))
+% \end{equation}
+for $\alpha \in [0,1)$. Hence, for $\alpha = 0$, \eqref{eq:Desired_FootplacementAsymptotic} reduces to \eqref{eq:Desired_Footplacement}.
+
+\newpage
+
+\section{Eigen Stuff}
+\large
+
+\textbf{Example 10.6}  \label{ex:Chap10Eigen01} Let $A$ be the $2 \times 2$ real matrix
+ $A=\left[\begin{array}{rr}
+    1 & 2\\
+    3 & 2
+    \end{array}\right].$
+Determine, if any, its eigenvalues and eigenvectors. 
+
+\vspace*{.2cm}
+
+\textbf{Solution:} To find eigenvalues, we need to solve 
+$$\det(\lambda I-A)= \left| \begin{array}{cc}
+    \lambda-1 & -2\\
+   -3 &\lambda -2
+    \end{array} \right| =(\lambda-1)(\lambda-2)-6=\lambda^2- 3 \lambda -4=0.$$
+    We compute the discriminant of this quadratic equation and we find
+    $$b^2-4ac = 9 +16 =25 >0,$$
+    and therefore there are two real solutions. We compute them with the quadratic formula to be $\lambda_1=-1$ and $\lambda_2=4$.\\
+    
+   To determine an eigenvector associated with $ \lambda_1=-1$, we need to find $v_1\in \real^2$ such that 
+   \begin{align*}
+       (A-\lambda_1 I_2) v_1 & = 0_{2 \times 1}\\
+        & \Updownarrow \\
+   \left( \left[\begin{array}{rr}
+    1 & 2\\
+    3 & 2
+    \end{array}\right] - (-1)   \left[\begin{array}{rr}
+    1 & 0\\
+    0& 1
+    \end{array}\right]\right) \left[\begin{array}{r}
+   v_{1a} \\
+  v_{1b}
+    \end{array}\right] & = \left[\begin{array}{r}
+   0 \\
+  0
+    \end{array}\right]\\
+     & \Updownarrow \\
+      \left[\begin{array}{rr}
+    2 & 2\\
+    3 & 3
+    \end{array}\right]  \left[\begin{array}{r}
+   v_{1a} \\
+  v_{1b}
+    \end{array}\right] & = \left[\begin{array}{r}
+   0 \\
+  0
+    \end{array}\right]\\
+    & \Updownarrow \\
+   \left[\begin{array}{r}
+   v_{1a} \\
+  v_{1b}
+    \end{array}\right] & = \alpha_1  \left[\begin{array}{r}
+   1 \\
+  -1
+    \end{array}\right], ~\alpha_1 \neq 0.
+   \end{align*}
+  
+   Similarly, to determine an eigenvector associated with $ \lambda_2=4$, we need to find $v_2\in \real^2$ such that 
+   \begin{align*}
+       (A-\lambda_2 I_2) v_2 & = 0_{2 \times 1}\\
+        & \Updownarrow \\
+   \left( \left[\begin{array}{rr}
+    1 & 2\\
+    3 & 2
+    \end{array}\right] - (4)   \left[\begin{array}{rr}
+    1 & 0\\
+    0& 1
+    \end{array}\right]\right) \left[\begin{array}{r}
+   v_{2a} \\
+  v_{2b}
+    \end{array}\right] & = \left[\begin{array}{r}
+   0 \\
+  0
+    \end{array}\right]\\
+     & \Updownarrow \\
+      \left[\begin{array}{rr}
+    -3 & 2\\
+    3 & -2
+    \end{array}\right]  \left[\begin{array}{r}
+   v_{2a} \\
+  v_{2b}
+    \end{array}\right] & = \left[\begin{array}{r}
+   0 \\
+  0
+    \end{array}\right]\\
+    & \Updownarrow \\
+   \left[\begin{array}{r}
+   v_{2a} \\
+  v_{2b}
+    \end{array}\right] & = \alpha_2  \left[\begin{array}{r}
+   2\\
+ 3
+    \end{array}\right], ~\alpha_2 \neq 0.
+   \end{align*}
+    
+
+\Qed
+
+\newpage
+\Large
+
+\begin{tcolorbox}[title=\textbf{\Large Finding Eigenvectors and Eigenvalues with Julia}]
+Beyond $2 \times 2$ matrices, we do not compute eigenvalues or eigenvectors by hand! In ROB 101, we use Julia!
+
+\begin{lstlisting}[language=Julia,style=mystyle]
+Random.seed!(876543212345678);
+B=randn(4,4)
+A=B'*B # symmetric matrices have real eigenvalues
+
+E=eigen(A)
+@show E.values
+E.vectors
+\end{lstlisting} 
+\end{tcolorbox}
+\begin{verbatim}
+E.values = [0.06287200462929299, 0.6813033999332612, 
+            2.9738855645273268, 4.4839915456638]
+
+4 x 4  Matrix{Float64}:
+  0.339074   0.0385456  -0.71411   -0.61122
+  0.551488   0.528452   -0.226828   0.604275
+ -0.191731   0.824533    0.318536  -0.426521
+  0.737651  -0.19849     0.58063   -0.281676
+\end{verbatim}
+
+\newpage
+
+
+\vspace*{0.5cm}
+\begin{tcolorbox}[sharp corners, colback=green!30, colframe=green!80!blue, title=\textbf{\Large When the Eigenvalues are Real and Distinct, the Eigenvectors form a Basis of $\real^n$}]
+Let $A$ be an $n \times n$ matrix with real coefficients. If the eigenvalues $\{ \lambda_1,\ldots, \lambda_n \}$ are real and \textbf{distinct}, that is, $\lambda_i \neq \lambda_j $ for all $1 \le i \neq j \le n$, then the eigenvectors $\{ v_1,\ldots,v_n \}$ are real and provide a basis of $\real^n.$\\
+
+Once again, the full story is given in Appendices~\ref{sec:CaseEigenvectors} and~\ref{sec:EigenStuff}. An interesting tidbit is that symmetric matrices always have real eigenvalues. Moreover, their eigenvectors can always be selected to form an orthogonal matrix; see Appendix~\ref{sec:RealSymmetricMatrices}.
+\end{tcolorbox}
+
+\vspace*{0.5cm}
+
+\begin{example}
+\label{ex:BasisEigenvectors}
+Using Julia, find the eigenvalues and eigenvectors of the $3 \times 3$ (symmetric) matrix below. Furthermore, determine if the eigenvectors form a basis of $\real^3$.
+
+\begin{equation}
+A:=\left[
+\begin{array}{rrr}
+2.2216 & 1.6798 & -0.2670 \\
+1.6798 & 0.8457 & -0.1651 \\
+-0.2670 & -0.1651 & 0.6391 \\
+\end{array}
+\right].
+\end{equation}
+\end{example}
+
+\textbf{Solution:} 
+\begin{lstlisting}[language=Julia,style=mystyle]
+E=eigen(A)
+E.values
+E.vectors
+det(E.vectors)
+\end{lstlisting}
+Using Julia, we compute that 
+\begin{equation}
+\left[
+\begin{array}{rrr}
+\lambda_1&
+\lambda_3 &
+\lambda_3
+\end{array}
+\right] =\left[
+\begin{array}{rrr}
+-0.2817 &
+0.6034 &
+3.3848 
+\end{array}
+\right]
+\end{equation}
+\text{ and } 
+\begin{equation}\left[
+\begin{array}{rrr}
+v_1&
+v_3 &
+v_3
+\end{array}
+\right] =
+\left[
+\begin{array}{rrr}
+0.5581 & 0.0870 & -0.8252 \\
+-0.8297 & 0.0741 & -0.5533 \\
+0.0131 & 0.9934 & 0.1135 \\
+\end{array}
+\right].
+\end{equation}
+Because the eigenvalues are distinct, we know that set $\{v_1, v_2, v_3 \}$ forms a basis of $\real^3$. To double check this, we determine that $\det(E.vectors)=1 \neq 0$ so that indeed, the eigenvectors are linearly independent and hence form a basis. 
+\Qed
+
+\newpage
+
+\begin{tcolorbox}[sharp corners, colback=green!30, colframe=green!80!blue, title=\textcolor{red}{\Large \bf Utility of Eigenvalues and Eigenvectors:} \textbf{\Large They Explain how a Square Matrix acts on a Vector}]
+Let $A$ be an $n \times n$ real matrix with real eigenvalues $\{ \lambda_1,\ldots, \lambda_n \}$ that are \textbf{distinct}, that is, $\lambda_i \neq \lambda_j $ for all $1 \le i \neq j \le n$. It then follows that the eigenvectors $\{ v_1,\ldots,v_n \}$ provide a basis for $\real^n.$ Let $x\in \real^n$ be arbitrary and write it as a linear combination of the basis of eigenvectors
+\begin{equation}
+    \label{eq:xExpandedEigenBasis}
+    x = \alpha_ 1 v_1 + \alpha_2 v_2 + \cdots + \alpha_n v_n.
+\end{equation}
+Then because $Av_i = \lambda_i v_i$,
+\begin{equation}
+    \label{eq:xExpandedEigenBasisA}
+   A x = \alpha_ 1 \lambda_1 v_1 + \alpha_2 \lambda_2 v_2 + \cdots +\alpha_n  \lambda_n v_n.
+\end{equation}
+If we apply $A$ to both sides of \eqref{eq:xExpandedEigenBasisA}, we obtain
+\begin{equation}
+    \label{eq:xExpandedEigenBasisA2}
+    \begin{aligned}
+       A^2 x &= \alpha_ 1 \lambda_1 A v_1 + \alpha_2 \lambda_2 A v_2 + \cdots +\alpha_n  \lambda_n Av_n \\
+       &= \alpha_ 1 (\lambda_1)^2 v_1 + \alpha_2 (\lambda_2)^2  v_2 + \cdots +\alpha_n  (\lambda_n)^2 v_n,
+    \end{aligned}
+\end{equation}
+where $A^2:= A \cdot A$ and we have used again, $A v_i = \lambda_i v$. 
+Moreover, using this fact iteratively yields that, for all $k \ge 2$,
+\begin{equation}
+    \label{eq:xExpandedEigenBasisB}
+   A^k x = \alpha_ 1 (\lambda_1)^k v_1 + \alpha_2 (\lambda_2)^k v_2 + \cdots +\alpha_n  (\lambda_n)^k v_n.
+\end{equation}
+
+\end{tcolorbox}
+\vspace*{.3cm}
+
+\textbf{Remarks:} 
+\begin{itemize}
+    \item Equation \eqref{eq:xExpandedEigenBasisB} for $k=1$ says that if we write a vector $x$ in the coordinates provided by the ``eigen-basis'' of a matrix, then how the matrix acts on the vector is very transparent: it simply scales each component by the corresponding eigenvalue. When a matrix has real eigenvalues, what we perceive as the matrix ``rotating a vector'' in the natural basis vectors $\{e_1, e_2, \ldots, e_n \}$ is an illusion; what is really happening is that the matrix is expanding, contracting, or leaving the same length individual components of the vector along various directions determined by the matrix's eigenvectors. 
+    \item The above property is exploited heavily in the design of feedback control systems. 
+    \item Equation \eqref{eq:xExpandedEigenBasisB} explains the phenomenon in Fig.~\ref{fig:SquishingSpace}, because 
+    $$ \begin{cases} 
+    |\lambda_i| < 1 & \iff  \lim_{k \to \infty}  ||(\lambda_i)^k v_i||= \lim_{k \to \infty}  |\lambda_i|^k  ||v_i||=0\\  
+    |\lambda_i| >1 & \iff  \lim_{k \to \infty}  ||(\lambda_i)^k v_i||= \lim_{k \to \infty}  |\lambda_i|^k  ||v_i||= \infty \\
+    |\lambda_i|= 1 & \iff || (\lambda_i)^k v_i|| = |\lambda_i|^k  || v_i||= ||v_i||, k\ge 0 
+    \end{cases} 
+    $$
+
+\end{itemize}
+
+
+
+\end{document}

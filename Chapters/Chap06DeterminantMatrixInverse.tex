@@ -1,0 +1,772 @@
+\section*{Learning Objectives}
+\begin{itemize}
+\item Fill in some gaps that we left during our sprint to an effective means for solving large systems of linear equations. 
+\end{itemize}
+
+\section*{Outcomes}
+\begin{itemize}
+\item Whenever two square matrices $A$ and $B$ can be multiplied, it is true that $\det(A \cdot B) = \det(A) \cdot \det(B)$
+\item You will learn what it means to ``invert a matrix,'' and you will understand that you rarely want to actually compute a matrix inverse! 
+\item If $ad - b c \neq 0$, then  $\left[\begin{array}{rr} a & b \\ c & d\end{array} \right]^{-1} =  \frac{1}{a d - b c} \left[\begin{array}{rr} d & -b \\ -c & a\end{array} \right]$. 
+\item Moreover, this may be the only matrix inverse you really want to compute explicitly, unless a matrix has special structure.
+\item Matrix transpose takes columns of one matrix into the rows of another.
+\end{itemize}
+\newpage
+
+% %\Kuttler{71}
+% From time to time, we will start taking some material from \Kuttler{68-69}. The authors have generously made it an open-source resource for the STEM community. The book is posted on our Canvas site. 
+
+\section{A very Useful Fact Regarding the Matrix Determinant}
+\label{sec:DetMatrixproject}
+
+\begin{tcolorbox}
+Let $A$ and $B$ be two $n \times n$ matrices. Then,
+$$\det(A \cdot B) = \det(A) \cdot \det(B). $$
+We note that $A$ and $B$ must be square and have the same size for the above useful fact to be true. 
+\end{tcolorbox}
+
+\vspace*{.2cm}
+\begin{tcolorbox}[sharp corners, colback=green!30, colframe=green!80!blue, title=\textbf{\Large Matrix Determinant via LU Factorization}]
+Now suppose that we have done the LU factorization of a square matrix $A$. Then, 
+using the fact that the determinant of a product of two square matrices is the product their respective determinants, we have that 
+$$\det(A) = \det(L \cdot U) = \det(L) \cdot \det(U). $$
+Because $L$ and $U$ are triangular matrices, each of their determinants is given by the product of the diagonal elements. Hence, we have a way of computing the determinant for square matrices of arbitrary size.
+\end{tcolorbox}
+
+\vspace*{.2cm}
+\begin{example} Compute the matrix determinant of
+$$\left[\begin{array}{rrr} -2 & -4 & -6\\
+-2 & 1 & -4 \\ -2 & 11 & -4 \end{array}\right].$$
+
+\end{example} 
+
+\textbf{Solution}
+Going back to Chap.~\ref{chap:LUfactorization}, specifically, \eqref{eq:Chap5pt4A} and \eqref{eq:Chap5pt4LU}, we have that
+$$ \underbrace{\left[\begin{array}{rrr} -2 & -4 & -6\\
+-2 & 1 & -4 \\ -2 & 11 & -4 \end{array}\right]}_{A}  =
+ \underbrace{\left[\begin{array}{rrr} 1 & 0 & 0\\ 1 & 1 & 0\\ 1 & 3 & 1\end{array} \right]}_{L} \cdot  \underbrace{\left[\begin{array}{rrr} -2 & -4 & -6 \\ 0 & 5 &  2 \\ 0 &  0 & -4\end{array} \right]}_{U} $$
+Hence, 
+$$\det(A) = \underbrace{(1)\cdot(1) \cdot(1)}_{\det(L)} \cdot \underbrace{(-2)\cdot(5)\cdot(-4)}_{\det(U)} = 40.$$
+\Qed
+\vspace*{0.2cm}
+\begin{tcolorbox}
+Once we know that $\det(A \cdot B) = \det(A) \cdot \det(B)$, we immediately obtain from it
+$$\boxed{\det(A \cdot B \cdot C) = \det(A) \cdot \det(B) \cdot \det(C)}$$
+because $\det(A \cdot B \cdot C) = \det((A \cdot B) \cdot C)= \det(A \cdot B) \cdot \det(C) = \det(A) \cdot \det(B) \cdot \det(C).$
+This formula extends to any product of $n \times n$ matrices.
+\end{tcolorbox}
+
+\clearpage
+\section{Identity Matrix and Matrix Inverse}
+\label{sec:IdentityMatrixInverse}
+
+There is a special square matrix denoted $I$, or sometimes $I_n$ to emphasize that it is an $n \times n $ matrix, which has ones on its diagonal and zeros everywhere else,
+$$I_1=[1],~I_2=\begin{bmatrix} 1 & 0\\0& 1 \end{bmatrix},~I_3= \begin{bmatrix} 1 & 0 & 0\\0& 1 & 0\\ 0 & 0 & 1 \end{bmatrix}, ~I_4=\begin{bmatrix} 1 & 0 & 0 & 0\\0& 1 & 0 & 0\\ 0 & 0 & 1 & 0 \\ 0 & 0& 0& 1\end{bmatrix}, ~\text{etc.} $$ 
+Because $I_n$ is diagonal, we see immediately that $\det(I_n)=1$.
+
+\begin{tcolorbox}[title=\textbf{\large Multiplication by the Identity Matrix}]
+Suppose that $A$ is an $n \times m$ matrix. Then 
+$$A = I_n \cdot A = A \cdot I_m. $$
+In other words, as long as the matrix product is defined, multiplying a matrix (on either side) by an identity matrix does not change it. 
+\end{tcolorbox}
+
+
+\begin{example}
+Suppose that $A$ is $2 \times 3$. Show that $I_2 \cdot A=A$ and $A \cdot I_3=A$. 
+\end{example} 
+
+\noindent \textbf{Solution:} We apply our ``second definition'' of matrix multiplication, 
+\begin{align*}
+   \begin{bmatrix} 1 & 0\\0& 1 \end{bmatrix}\cdot \begin{bmatrix} a_{11} & a_{12} & a_{13}\\a_{21} & a_{22} & a_{23} \end{bmatrix} &=  \begin{bmatrix} 1 \\0 \end{bmatrix}\cdot \begin{bmatrix} a_{11} & a_{12} & a_{13}\end{bmatrix} + 
+   \begin{bmatrix} 0\\ 1 \end{bmatrix}\cdot \begin{bmatrix} a_{21} & a_{22} & a_{23} \end{bmatrix}\\
+   &= \begin{bmatrix} a_{11} & a_{12} & a_{13}\\0 & 0 & 0\end{bmatrix} + \begin{bmatrix} 0 & 0 & 0\\a_{21} & a_{22} & a_{23} \end{bmatrix}\\
+   &=\begin{bmatrix} a_{11} & a_{12} & a_{13}\\a_{21} & a_{22} & a_{23} \end{bmatrix}
+\end{align*}
+and
+\begin{align*}
+   \begin{bmatrix} a_{11} & a_{12} & a_{13}\\a_{21} & a_{22} & a_{23} \end{bmatrix} \cdot \begin{bmatrix} 1 & 0 & 0\\0& 1 & 0\\ 0 & 0 & 1 \end{bmatrix} &=  \begin{bmatrix} a_{11} \\a_{21}  \end{bmatrix}\cdot \begin{bmatrix} 1 & 0 & 0\end{bmatrix} + 
+   \begin{bmatrix} a_{12}\\ a_{22}\end{bmatrix}\cdot \begin{bmatrix}0& 1 & 0 \end{bmatrix} +  
+   \begin{bmatrix} a_{13}\\ a_{23}\end{bmatrix}\cdot \begin{bmatrix} 0 & 0 & 1 \end{bmatrix}\\
+   &= \begin{bmatrix} a_{11} & 0 & 0\\a_{21} & 0 & 0\end{bmatrix} + \begin{bmatrix} 0 & a_{12} & 0\\0 & a_{22} & 0 \end{bmatrix} +  \begin{bmatrix} 0 & 0 & a_{13}\\0 &  0 & a_{23}  \end{bmatrix}\\
+   &=\begin{bmatrix} a_{11} & a_{12} & a_{13}\\a_{21} & a_{22} & a_{23} \end{bmatrix}.
+\end{align*}
+\Qed
+
+
+So, if multiplying a matrix by an identity matrix does not change it, for what is it used? The answer is similar to the number $1.0$ in the reals: we know that $$1.0 \times x = x \times 1.0 =x$$ for all $x \in \real$, which is handy to know, but it's real importance is that we use it to define the multiplicative inverse of $x$. \\
+
+\textbf{Recall:} For a given number $x\in \real$, a second number $y\in \real$ is called \textbf{the multiplicative inverse of $\mathbf{x}$} if 
+$$ x \cdot y = y \cdot x = 1. $$
+We can prove that if a multiplicative inverse exists, it is unique. And, we can prove that a multiplicative inverse exists if, and only if, $x \ne 0$. Finally, when a multiplicative inverse exists, we typically denote it by $\frac{1}{x}$, though sometimes we might use $x^{-1}$. \\
+
+In a similar, manner, the identity matrix is very useful for defining the inverse of a matrix. \textbf{In ROB 101, we will only define inverses for square matrices.} It is possible to define inverses for non-square matrices, which are often called Moore-Penrose Inverses, after their inventors. For a first introduction to matrix inverses, handling the topic for square matrices is really enough!
+
+\begin{lstlisting}[language=Julia,style=mystyle]
+using LinearAlgebra
+# Creating an identiy matrix in Julia
+
+n=5
+myI=zeros(n,n)+I
+\end{lstlisting}
+\textbf{Output}
+\begin{verbatim}
+5×5 Matrix{Float64}:
+ 1.0  0.0  0.0  0.0  0.0
+ 0.0  1.0  0.0  0.0  0.0
+ 0.0  0.0  1.0  0.0  0.0
+ 0.0  0.0  0.0  1.0  0.0
+ 0.0  0.0  0.0  0.0  1.0
+\end{verbatim}
+
+\begin{tcolorbox}[sharp corners, colback=green!30, colframe=green!80!blue, title=\textbf{\large The Inverse of a Square Matrix}]
+ Let $A$ be an $n \times n$ matrix. A second $n \times n$ matrix $B$ is a multiplicative inverse of $A$ if
+ $$A \cdot B = B \cdot A = I_n. $$
+ \begin{itemize}
+     \item When such a matrix exists, it can be shown to be unique.
+     \item We say that $A$ is invertible and we denote the inverse by $A^{-1}$ and we simply call it $A$ inverse or the inverse of $A$.
+     \item It is a major \textit{faux pas} (means, no-no, in French) to write $1/A$ in place of $A^{-1}$.
+     \item \textbf{Very Useful Fact:} $A$ is invertible if, and only if, $\det(A) \neq 0$. It is so useful we will state it a second time below!
+ \end{itemize}
+\end{tcolorbox}
+\vspace*{.1cm}
+
+
+\begin{example}Consider $A=\left[\begin{array}{rr} 4 & 2 \\ 5 & 3\end{array} \right]$. Let's check if $B=\frac{1}{2}\left[\begin{array}{rr} 3 & -2\\ -5 & 4 \end{array} \right]$ is in fact an inverse for $A$.
+\end{example} 
+
+\noindent \textbf{Solution:} According to the definition, we need to check that $A\cdot B = B \cdot A = I_2$. Well, 
+$$A \cdot B = \left[\begin{array}{rr} 4 & 2 \\ 5 & 3\end{array} \right] \cdot \left( \frac{1}{2}\left[\begin{array}{rr} 3 & -2\\ -5 & 4 \end{array} \right] \right)= \frac{1}{2} \left[\begin{array}{rr} \left(4 \cdot 3 - 2 \cdot 5\right) & \left(4 \cdot(-2)+ 2 \cdot 4\right)\\  \left(5 \cdot 3 - 3 \cdot 5\right) & \left(5 \cdot(-2)+ 3 \cdot 4\right)\end{array} \right] = \frac{1}{2}\left[\begin{array}{rr} 2 & 0\\ 0 & 2 \end{array} \right] = \left[\begin{array}{rr} 1 & 0\\ 0 & 1 \end{array} \right]$$
+and, because we passed the first part of the test, we do the second part
+$$B \cdot A =  \left( \frac{1}{2}\left[\begin{array}{rr} 3 & -2\\ -5 & 4 \end{array} \right] \right) \cdot \left[\begin{array}{rr} 4 & 2 \\ 5 & 3\end{array} \right] = 
+\frac{1}{2} \left[\begin{array}{rr} \left(3 \cdot 4 - 2 \cdot 5\right) & \left(3 \cdot 2 -2 \cdot 3\right)\\  \left((-5) \cdot 4 +4 \cdot 5\right) & \left((-5) \cdot 2+ 4 \cdot 3\right)\end{array} \right] = \frac{1}{2}\left[\begin{array}{rr} 2 & 0\\ 0 & 2 \end{array} \right] = 
+\left[\begin{array}{rr} 1 & 0\\ 0 & 1 \end{array} \right]$$
+and hence we conclude that $B=A^{-1}.$  \Qed\\
+
+\begin{tcolorbox}[sharp corners, colback=green!30, colframe=green!80!blue, title=\textbf{\large Most Important Matrix Inverse for ROB 101}]
+ {\large Consider $A=\left[\begin{array}{rr} a & b \\ c & d\end{array} \right]$ and suppose that $\det(A) = a\cdot d - b \cdot c \neq 0.$ Then,
+  $$ A^{-1}= \frac{1}{a\cdot d - b \cdot c} \left[\begin{array}{rr} d & -b \\ -c & a\end{array} \right] = \frac{1}{\det(A)} \left[\begin{array}{rr} d & -b \\ -c & a\end{array} \right] $$}
+\end{tcolorbox}
+
+Applying the above formula for the inverse of a $2 \times 2$ matrix immediately gives that
+ $$\left[\begin{array}{rr} 4 & 2 \\ 5 & 3\end{array} \right]^{-1} = \frac{1}{2}\left[\begin{array}{rr} 3 & -2\\ -5 & 4 \end{array} \right].$$
+
+\textbf{Remarks:} We've already stated that if a matrix has an inverse, it is unique (that is, there is only one of them). The definition of the inverse we used was, if $A$ and $B$ are both $n \times n$, then 
+$$(A \cdot B=B \cdot A = I_n) \iff B=A^{-1} \iff A = B^{-1}.$$
+For square matrices with \textbf{real (or complex) elements}, you do not have to check both $A \cdot B = I$ and $ B \cdot A = I$ to conclude that $B=A^{-1}$. \textbf{It is enough to check one of them because}
+  $$(A \cdot B = I) \iff (B\cdot A= I) \iff B=A^{-1}. $$
+  For more general notions of numbers, one does have to check both sides. \\
+
+
+\begin{tcolorbox}[title=\textbf{The Matrix Inverse and the Matrix Determinant:}]
+
+\begin{itemize}
+    \item Suppose that $A$ is $n \times n$ and invertible. Because the ``determinant of a product is the product of the determinants'', we have that
+    $$1 = \det(I_n)=  \det(A\cdot A^{-1})=\det(A) \cdot \det(A^{-1}). $$
+    \item It follows that if $A$ has an inverse, then $\det(A)\neq 0$ and 
+    $\det(A^{-1}) = \frac{1}{\det(A)}$
+    \item {\textbf The other way around is also true:} if $\det(A)\neq 0$, then $A$ has an inverse (one also says that $A^{-1}$ exists). Putting these facts together gives the next result.
+\end{itemize}
+\end{tcolorbox}
+\vspace*{1cm}
+
+
+\begin{tcolorbox}[sharp corners, colback=green!30, colframe=green!80!blue, title=\textbf{\large Major Important Fact}]
+ {\large An $n \times n$ matrix $A$ is invertible if, and only if, $\det(A)\neq 0.$}
+\end{tcolorbox}
+
+Another useful fact about matrix inverses is that if $A$ and $B$ are both $n\times n$ and invertible, then their product is also invertible and
+$$ \boxed{(A \cdot B)^{-1}=B^{-1} \cdot A^{-1}.} $$
+Note that the order is swapped when you compute the inverse. To see why this is true, we note that
+$$ (A\cdot B) \cdot (B^{-1} \cdot A^{-1}) =   A\cdot (B \cdot B^{-1})  \cdot A^{-1} = A\cdot (I)  \cdot A^{-1} = A\cdot A^{-1} = I.$$
+\textbf{Hence, $(A\cdot B)^{-1} = B^{-1} \cdot A^{-1}$ and NOT $ A^{-1} \cdot B^{-1}$.}\\
+
+\begin{tcolorbox}[title=\textbf{LU and Matrix Inverses}]
+A consequence of this is that if $A$ is invertible and $A= L \cdot U$ is the LU factorization of $A$, then $$A^{-1} = U^{-1} \cdot L^{-1}. $$
+While we will not spend time on it in ROB 101, it is relatively simple to  compute the inverse of a triangular matrix whose determinant is non-zero.
+
+\end{tcolorbox}
+
+
+
+\section{Utility of the Matrix Inverse and its Computation}
+\label{sec:UtilityMatrixInverse}
+
+The primary use of the matrix inverse is that it provides a \textbf{closed-form solution} to linear systems of equations. Suppose that $A$ is square and invertible, then 
+\vspace*{0.2cm}
+\begin{equation}
+\label{eq:xEqualsInvA_b}
+   \boxed{ Ax=b \iff x = A^{-1} \cdot b.} 
+\end{equation}
+\vspace*{0.2cm}
+
+\textbf{While it is a beautiful thing to write down the closed-form solution given in  \eqref{eq:xEqualsInvA_b} as the answer to $Ax=b$, one should rarely use it in computations.} It is much better to solve $Ax=b$ by factoring $A=L \cdot U$ and using back and forward substitution, than to first compute $A^{-1}$ and then multiply $A^{-1}$ and $b$. Later in ROB 101, we'll learn another good method called the $QR$ factorization. \\
+
+We (your instructors) know the above sounds bizarre to you! You've been told that $Ax=b$ has a unique solution for $x$ if, and only if, $\det(A) \neq 0$, and you know that $A^{-1}$ exists if, and only if, $\det(A)\neq 0$. Hence, logic tells you know that $x=A^{-1}b$ is the unique solution to $Ax=b$ if, and only if, $\det(A)\neq 0$. So what gives? \\
+
+\begin{tcolorbox}[sharp corners, colback=green!30, colframe=green!80!blue, title=\textbf{\large (Optional Read) Theory vs Reality: I}]
+If what you really want to solve is $A x = b$, then it is numerically inefficient to first compute the matrix inverse, $A^{-1}$, and then to do the matrix multiplication $A^{-1} b$. This is because each column of $A^{-1}$ is the solution to a system of linear equations, namely,
+\begin{equation}
+\label{eq:SolveForInvA}
+    A \cdot A^{-1} = I_n \iff A^{-1} = \left[\begin{array}{cccc} x^{\rm sol~1} & x^{\rm sol~2} & \cdots & x^{\rm sol~n}  \end{array} \right], \text{ where, }A x^{\rm sol~i} = e_i, 1 \le i \le n,
+\end{equation}
+and, in Julia notation, 
+$$e_i[j]=\begin{cases} 1 &  \text{if}~~i = j \\ 0 & \text{otherwise}\end{cases}.$$
+In other symbols, just to further drive home the point, solving for $A^{-1}$ is equivalent to solving $n$ different linear systems of equations, 
+$$A x^{\rm sol~i} = e_i,$$ 
+and then using the solutions as the columns of $A^{-1}$. 
+%That is, 
+% $$A^{-1} = \left[\begin{array}{cccc} x^{\rm sol~1} & x^{\rm sol~2} & \cdots & x^{\rm sol~n}  \end{array} \right]  \iff A x^{\rm sol~i} = e_i,~ 1 \le i \le n \iff A \cdot A^{-1} = I_n.$$
+\end{tcolorbox}
+\vspace*{1cm}
+
+Do you really want to solve $n$ systems of linear equations just to solve one? (That's a rhetorical question, and the answer is NO!)\\ 
+
+\begin{example}
+Use the method in \eqref{eq:SolveForInvA} to compute $A^{-1}$ and then apply the formula $x=A^{-1} b$  to solve
+\begin{equation}
+\left[
+\begin{array}{ccc}
+0.9737 & 0.4123 & 1.3861 \\
+0.7551 & 0.6366 & 1.3918 \\
+0.6529 & 0.1277 & 0.7807 \\
+\end{array}
+\right] \left[
+\begin{array}{c}
+x_1\\x_2\\x_3
+\end{array}
+\right] = \left[
+\begin{array}{c}
+0.5568 \\
+0.4081 \\
+0.5018 \\
+\end{array}
+\right]
+\end{equation}
+\end{example}
+
+\noindent \textbf{Solution:} We compute $A^{-1}$ using the method indicated in \eqref{eq:SolveForInvA}, namely, solving $Ax=e_i$ three times.
+$$\left[
+\begin{array}{ccc}
+0.9737 & 0.4123 & 1.3861 \\
+0.7551 & 0.6366 & 1.3918 \\
+0.6529 & 0.1277 & 0.7807 \\
+\end{array}
+\right] \left[
+\begin{array}{c}
+x_1\\x_2\\x_3
+\end{array}
+\right] = \left[
+\begin{array}{c}
+1.0\\
+0.0 \\
+0.0\\
+\end{array}
+\right] \implies \left[
+\begin{array}{c}
+x_1\\x_2\\x_3
+\end{array}
+\right]^{\rm sol~1}= \left[
+\begin{array}{r}
+19151.4036 \\
+19150.4446 \\
+-19149.6564 \\
+\end{array}
+\right]$$
+
+$$\left[
+\begin{array}{ccc}
+0.9737 & 0.4123 & 1.3861 \\
+0.7551 & 0.6366 & 1.3918 \\
+0.6529 & 0.1277 & 0.7807 \\
+\end{array}
+\right] \left[
+\begin{array}{c}
+x_1\\x_2\\x_3
+\end{array}
+\right] = \left[
+\begin{array}{c}
+0.0\\
+1.0 \\
+0.0\\
+\end{array}
+\right] \implies \left[
+\begin{array}{c}
+x_1\\x_2\\x_3
+\end{array}
+\right]^{\rm sol~2}= \left[
+\begin{array}{r}
+-8691.1842 \\
+-8688.3033 \\
+8689.9911 \\
+\end{array}
+\right]$$
+
+$$\left[
+\begin{array}{ccc}
+0.9737 & 0.4123 & 1.3861 \\
+0.7551 & 0.6366 & 1.3918 \\
+0.6529 & 0.1277 & 0.7807 \\
+\end{array}
+\right] \left[
+\begin{array}{c}
+x_1\\x_2\\x_3
+\end{array}
+\right] = \left[
+\begin{array}{c}
+0.0\\
+0.0 \\
+1.0\\
+\end{array}
+\right] \implies \left[
+\begin{array}{c}
+x_1\\x_2\\x_3
+\end{array}
+\right]^{\rm sol~3}= \left[
+\begin{array}{r}
+-18507.8638 \\
+-18511.2973 \\
+18508.1696 \\
+\end{array}
+\right]$$
+Putting these together gives
+$$
+A^{-1}=\left[
+\begin{array}{rrr}
+19151.4036 & -8691.1842 & -18507.8638 \\
+19150.4446 & -8688.3033 & -18511.2973 \\
+-19149.6564 & 8689.9911 & 18508.1696 \\
+\end{array}
+\right] \implies x = A^{-1} b = \left[
+\begin{array}{r}
+-8860.1245 \\
+-8860.7769 \\
+8860.1837 \\
+\end{array}
+\right]
+$$
+
+\noindent \textbf{Remark:} Why are there relatively large numbers in the solution of $Ax=b$ when  $A$ and $b$ have modestly sized entries? In this case, we could have computed $\det(A) = 1.67e-5$ and seen ahead of time that $A$ is close to singular. Unfortunately, in the real world, it is easy to have examples where the determinant of a matrix is ``relatively far from zero'' and yet the matrix is ``barely invertible''. 
+
+\Qed
+
+\begin{tcolorbox}[sharp corners, colback=green!30, colframe=green!80!blue, title=\textbf{\large (Optional Read) Theory vs Reality: II}]
+While in the world of perfect arithmetic, ``$A^{-1}$ exists if, and only if, $\det(A)\neq 0$'' , in the approximate arithmetic done by a computer, or by a hand calculator, for that matter, the determinant being nonzero is not a reliable indicator of ``numerical invertibility''. The problem is that the determinant of a matrix can be ``very nice'', meaning its absolute value is near $1.0$, while, from a numerical point of view, the matrix is ``barely invertible''. 
+\end{tcolorbox}
+\vspace*{1cm}
+
+\begin{example}  Consider $A = \left[\begin{array}{cc} 1 & 10^{-15} \\ 10^{10} & 1\end{array} \right]$.  For this small example, we can see that $A$ has a huge number and a tiny number in it, but imagine that $A$ is the result of an intermediate computation in your algorithm and hence you'd never look at it, or the matrix is so large, say $50 \times 50$, you would not notice such numbers. If you want to check whether $A$ is invertible or not, you find that $\det(A)=1-10^{-5} =0.99999$, which is very close to 1.0, and thus the determinant has given us no hint that $A$ has crazy numbers of vastly different sizes in it. \Qed
+\end{example}
+\vspace*{0.1cm}
+
+\begin{tcolorbox}[sharp corners, colback=green!30, colframe=green!80!blue, title=\textbf{\large (Optional Read) Theory vs Reality: III}]
+The value of $|\det(A)|$ (magnitude of the determinant of $A$) is a poor predictor of whether or not $A^{-1}$ has very large and very small elements in it, and hence poses numerical challenges for its computation. For typical HW ``drill'' problems, you rarely have to worry about this. However, for ``real'' engineering problems, where a typical dimension (size) of $A$ may be 50 or more, then \textbf{please please please avoid the computation of the matrix inverse whenever you can!}\\
+
+\textbf{The LU factorization is a more reliable predictor of numerical problems that may be encountered when computing $A^{-1}$. But once you have the LU Factorization, you must ask yourself, do you even need $A^{-1}$?} In the majority of cases, the answer is NO! Once you have the LU Factorization, solving for $Ax=b$ is cake.
+\end{tcolorbox}
+
+
+\begin{example}   Consider a $3 \times 3$ matrix
+\begin{equation}
+\label{eq:poorlyCondtionedA}
+    A=\left[ \begin{array}{ccr} 
+       100.0000 &  90.0000 & -49.0000 \\
+   90.0000 &  81.0010 &  5.4900 \\
+   100.0000 &   90.0010 &   59.0100  \end{array} \right].
+\end{equation}
+We compute the determinant and check that it is not close to zero. Indeed, $\det(A)=0.90100$ (correct to more than ten decimal places\footnote{$\det(A)-0.9010=-1.7 \times 10^{-11}$.}), and then bravely, we use Julia to compute the inverse, yielding
+$$A^{-1} =  \left[\begin{array}{rrr} 
+  -178.9000 & -10,789.0666  & 9,889.0666 \\
+   198.7791 &   11,987.7913 &  -10,987.981 \\
+  -110.9878 &  -0.1110 &    0.1110
+  \end{array} \right], $$
+which we see has some really large numbers, such as $ 11,987$. As a contrast, we compute $A=L \cdot U$, the LU factorization (without permutation), yielding
+\begin{equation*}
+\begin{array}{cc} 
+    L=\left[ \begin{array}{ccr} 
+1.0 &     0.0 &  0.0 \\
+ 0.9 &    1.0  & 0.0 \\
+ 1.0 &   1.0 &  1.0  \end{array} \right] & ~~~~
+ U= \left[ \begin{array}{rrr} 
+  100.000 &  90.000~~     &     -49.000 \\
+ 0.000   &  \boxed{ -0.001} &  99.000 \\
+ 0.000   &    0.000~~   &     9.010  \end{array} \right].
+ \end{array}
+\end{equation*}
+We see that $U$ has a small number on the diagonal, and hence, if we do back substitution to solve $Ux=y$, for example, as part of solving
+$$Ax = b \iff L\cdot U x = b \iff (Ly =b \text{ and } Ux=y )$$ 
+we know in advance that we'll be dividing by $-0.001$, which could easily yield a big number. \\
+
+Moreover, we see the diagonal of $L$ is $[1.0, 1.0, 1.0]$, and hence $\det(L)=1$. The diagonal of $U$ is $[100.0, -0.001, 9.01]$, and hence $\det(U)=0.901$, and we realize that we ended with a number close to $1.0$ in magnitude by multiplying a large number and a small number. \Qed
+\end{example}
+
+
+
+% Continuing with the example, we seek to solve $Ax=b$ for with $A$ given in \eqref{eq:poorlyCondtionedA} and $b$ with small numbers
+% $$\underbrace{\left[ \begin{array}{ccr} 
+%       100.0000 &  90.0000 & -49.0000 \\
+%   90.0000 &  81.0010 &  5.4900 \\
+%   100.0000 &   90.0010 &   59.0100  \end{array} \right]}_{A}
+%   \underbrace{\left[\begin{array}{r} x_1 \\ x_2 \\x_3 \end{array}\right]}_{x} =
+%   \underbrace{\left[\begin{array}{r} 1.0 \\ 1.0 \\-1.0 \end{array}\right]}_{b}.$$
+
+\begin{lstlisting}[language=Julia,style=mystyle]
+# Using the inverse command in Julia
+using LinearAlgebra    
+using Random
+Random.seed!(12345678)
+
+A=randn(6,6)
+@show det(A)
+inv(A)
+\end{lstlisting}
+\textbf{Output}
+\begin{verbatim}
+det(A) = 49.345449482491595
+
+6×6 Matrix{Float64}:
+ -0.0313214   0.407173   -0.00884134  -0.550231    0.420031   -0.17968
+  0.0915914  -0.0232623   0.268212    -0.0834243   0.400871    0.174108
+ -0.303567    0.103855   -0.240916    -0.325997    0.345296    0.406821
+  0.346315    0.24365    -0.162719    -0.347234    0.346664    0.00357876
+ -0.121959    0.284931    0.135561     0.305418   -0.0151208   0.140373
+  0.0575381   0.248593    0.467928     0.0124006  -0.0322815   0.440638
+\end{verbatim}
+   
+
+
+
+\section{Matrix Transpose and Symmetric Matrices}
+\label{sec:MAtrixTransposeSymmetricMatrices}
+\begin{tcolorbox}[title=\textbf{Transpose of a Matrix}]
+Let $A$ be an $n \times m$ matrix with entries $[A]_{ij}=a_{ij}$, for $1\le i \le n$ and $1 \le j \le m$. Then $A^\top$, the transpose of $A$, is an $m \times n$ matrix with its $ij$-entry equal to the $ji$ entry of $A$,
+$$[A^\top]_{ij}=[A]_{ji},  1 \le i \le m,    1\le j \le n.$$
+Most of us remember the definition more ``graphically'' as the transpose 
+takes the rows of $A$ and turns them into columns to form the matrix transpose, 
+$$
+A^\top := \left[\begin{array}{c}\boxed{a_{11}~~ a_{12}~~ \cdots~~ a_{1m}} \medskip \\
+\boxed{a_{21}~~ a_{22}~~ \cdots~~ a_{2m}} \\
+\vdots \\
+\boxed{a_{n1}~~ a_{n2}~~ \cdots~~ a_{nm}}\end{array}\right]^{\Huge \top} :=  \left[~~ \boxed{\begin{array}{c} a_{11} \\ a_{12}\\ \vdots \\ a_{1m}\end{array} }~~~
+\boxed{\begin{array}{c} a_{21} \\ a_{22}\\ \vdots \\ a_{2m}\end{array} }~~~\cdots~~~
+\boxed{\begin{array}{c} a_{n1} \\ a_{n2}\\ \vdots \\ a_{nm}\end{array}}~~\right].
+$$
+Equivalently, you can view the matrix transpose as taking each column of one matrix and laying the elements out as rows in the transposed matrix 
+$$
+ A^\top :=\left[ ~~\boxed{\begin{array}{c} a_{11} \\ a_{21}\\ \vdots \\ a_{n1}\end{array} }~~~
+\boxed{\begin{array}{c} a_{12} \\ a_{22}\\ \vdots \\ a_{n2}\end{array} }~~~\cdots~~~
+\boxed{\begin{array}{c} a_{1m} \\ a_{2m}\\ \vdots \\ a_{nm}\end{array} }~~\right]^{\Huge \top}:=  \left[\begin{array}{c}\boxed{a_{11}~~ a_{21}~~ \cdots~~ a_{n1}} \medskip \\
+\boxed{a_{12}~~ a_{22}~~ \cdots~~ a_{n2}} \\
+\vdots \\
+\boxed{a_{1m}~~ a_{2m}~~ \cdots~~ a_{nm}}\end{array}\right] .
+$$
+\end{tcolorbox} 
+
+
+\begin{example}
+Compute the transpose of
+\begin{equation}
+\label{eq:SimpleTranspose02}
+A=\left[
+\begin{array}{ccc}
+1 & 2 & 3\\
+4 & 5 & 6
+\end{array} \right]
+\end{equation}.
+\end{example}
+
+\noindent \textbf{Solution:} \begin{equation}
+\label{eq:SimpleTranspose02B}
+A^\top=\left[
+\begin{array}{cc}
+1 & 4 \\
+2& 5\\
+3 & 6
+\end{array} \right].
+\end{equation}
+Did we just turn the rows into columns or the columns into rows? Trick question! We get the same result either way. :-) Also, is it clear that transposing the matrix in \eqref{eq:SimpleTranspose02B} gives back the original matrix in \eqref{eq:SimpleTranspose02}? We'll let you try this on your own.
+
+\Qed
+
+\begin{tcolorbox}[sharp corners, colback=green!30, colframe=green!80!blue, title=\textbf{\large Appearances can be Deceiving}]
+At first blush, the matrix transpose seems kind of pointless. We will learn, however, special types of matrices whose inverses are equal to their transpose:
+\begin{itemize}
+    \item Permutation matrices, which we revisit in the next section.
+    \item Orthogonal matrices, which we study in Chap.~\ref{sec:OrthognalStuff}.
+\end{itemize}
+Clearly the transpose is super easy to compute. It's awesome that there are useful matrices with inverses that can be computed by simply transposing the matrix!\
+% The matrix transpose is also useful to defining 
+\end{tcolorbox}
+
+\vspace*{.1cm}
+\begin{tcolorbox}[title=\textbf{Properties of the Transpose Operation}]
+For any matrix $A$, 
+$$(A^\top)^\top = A \text{  and if }A \text{ is square }, \det(A^\top) = \det(A). $$
+Suppose that $A$ is $n \times m$ and $B$ is $m \times p$, so that $A \cdot B$ makes sense. Then
+$$ (A \cdot B)^\top = B^\top \cdot A^\top, $$
+\textbf{and just as with the matrix inverse, the order of the matrices is reversed.} \\
+
+\textbf{Note to self:} For non-square matrices, it's often easy to detect your mistake when you attempt to form the product in the wrong order, namely $A^\top \cdot B^\top$ because, in general, you cannot multiply an $m \times n$ matrix with a $p \times m$ matrix [consider $n=7$, $m=5$ and $p=3$, for example]. \textcolor{red}{\bf Of course, when $A$ and $B$ are square, Julia will not complain and you will have simply introduced an error in your code! The same can happen when $n=p \neq m$.} \end{tcolorbox}
+\vspace*{0.2cm}
+
+
+\begin{tcolorbox}[title=\textbf{Symmetric and Skew-symmetric Matrices}]
+An $n \times n$ matrix is \textbf{symmetric} if $A^\top = A$ (the transpose of $A$ is equal to $A$ itself). An $n \times n$ matrix is \textbf{skew-symmetric} if $A^\top = -A$ (the transpose of $A$ is equal to minus $A$). 
+\end{tcolorbox}
+\vspace*{0.2cm}
+
+\begin{example}
+Determine which matrices are symmetric, skew-symmetric, or neither.
+$$
+A_1=\left[
+\begin{array}{rrr}
+1 & -2 & 5\\
+2 & 0 & 6\\
+-5 & -6 & 7
+\end{array} \right],~~A_2=\left[
+\begin{array}{rrr}
+1 & 3 & 7\\
+3 & 0 & -6\\
+7 & -6 & 7
+\end{array} \right],~~
+A_3=\left[
+\begin{array}{ccc}
+1 & 2 & 3\\
+4 & 5 & 6
+\end{array} \right], ~\text{and}~A_4=\left[
+\begin{array}{rrr}
+0& -2 & 5\\
+2 & 0 & 6\\
+-5 & -6 & 0
+\end{array} \right].
+$$
+\end{example}
+
+\noindent \textbf{Solution:}
+We compute each of the transposes and then compare them to either the original matrix or its negative, to check for the matrix being symmetric, skew-symmetric, or neither.
+$$
+A_1^\top=\left[
+\begin{array}{rrr}
+1 & 2 & -5\\
+-2 & 0 & -6\\
+5 & 6 & 7
+\end{array} \right],~~A_2^\top=\left[
+\begin{array}{rrr}
+1 & 3 & 7\\
+3 & 0 & -6\\
+7 & -6 & 7
+\end{array} \right],~~
+A_3^\top=\left[
+\begin{array}{cc}
+1 & 4 \\
+2 & 5 \\
+3 & 6
+\end{array} \right], ~\text{and}~A_4^\top=\left[
+\begin{array}{rrr}
+0& 2 & -5\\
+-2 & 0 & -6\\
+5 & 6 & 0
+\end{array} \right].
+$$
+Because $A_1^\top$ is neither equal to $A_1$ nor $-A_1$, it is neither symmetric nor skew-symmetric. Because $A_2^\top$ equals $A_2$ it is symmetric. Because $A_3$ is not square, it cannot be either symmetric or skew-symmetric. Because $A_4^\top$ equals $-A_4$, it is skew-symmetric.
+\Qed
+
+\vspace*{.2cm}
+
+\noindent \textbf{(Optional Read) Remarks:} For an $ n \times n$ matrix to be skew-symmetric, can you see that its main diagonal must be zero (because it must equal the negative of itself)? Also, that its super-diagonal and sub-diagonal must be negatives of one another, and the same for each successive pair of diagonals? This is illustrated below where the main diagonal is in red font, the super- and sub-diagonals in blue font, and the next diagonals are in bold black font,
+$$ A_4=\left[
+\begin{array}{rrr}
+\RED 0& \BLUE-2 & \mathbf{5}\\
+\BLUE 2 & \RED 0 & \BLUE6\\
+\mathbf{-5} &\BLUE -6 & \RED 0
+\end{array} \right].$$
+Similarly,  for an $ n \times n$ matrix to be symmetric, can you see that its main diagonal can be arbitrary (because it just has to be equal to itself)? Also, that its super-diagonal and sub-diagonal must be equal to one another, and the same for each successive pair of diagonals? This is illustrated below where the main diagonal is in red font, the super- and sub-diagonals in blue font, and the next diagonals are in bold black font,
+\begin{equation}
+\label{eq:DiagonalTestSymmetricMatrix}
+    A_2=\left[
+\begin{array}{rrr}
+\RED 1 & \BLUE 3 & \mathbf{7}\\
+\BLUE 3 & \RED 0 & \BLUE -6\\
+\mathbf{7} & \BLUE -6 & \RED 7
+\end{array} \right].
+\end{equation} 
+
+\begin{tcolorbox}[sharp corners, colback=green!30, colframe=green!80!blue,title=\textbf{\large A Key Source of Symmetric Matrices}]
+Let $A$ be an $n \times m$ real matrix. Then $A^\top \cdot A$ is an $m \times m$ symmetric matrix and $A \cdot A^\top$ is an $n \times n$ symmetric matrix. \\
+
+\textbf{Remark:} Why is the above true? Because $\left(A^\top \cdot A\right)^\top =\left(A \right)^\top \cdot \left( A^\top\right)^\top = A^\top \cdot A,$ where we have used the property $\left( A \cdot B\right)^\top = B^\top \cdot A^\top.$ Similar reasoning shows that $\left(A \cdot A^\top \right)^\top =A \cdot A^\top . $
+\end{tcolorbox}
+
+\section{Revisiting Permutation Matrices} 
+\label{sec:RevisitPermutation}
+In Chap.~\ref{sec:PermutationMatrices}, we jumped ahead and introduced permutation matrices before properly treating the matrix transpose and the matrix inverse.  We'll set things right here. Let's recall the definition first.\\
+
+\begin{tcolorbox}[title=\textbf{\large Permutation Matrices}]
+Matrices that consist of all ones and zeros, with each row \textbf{and} each column having a single one, are called permutation matrices. In fact, the requirement that each and every column and row have exactly one $1$ and all other entries zero implies that a permutation matrix has to be square. Hence, an $n \times n$ permutation matrix must have exactly $n$ ones and $n(n-1)$ zeros. 
+\end{tcolorbox}
+\vspace*{0.1cm}
+
+
+
+\begin{example} Determine which matrices are permutation matrices.
+$$
+A_1=\left[
+\begin{array}{rrr}
+1 & -1 & 0\\
+0& 1 & 2\\
+2 & 0 &1
+\end{array} \right],~~A_2=\left[
+\begin{array}{rrr}
+0 & 1 & 0\\
+0 & 0 & 1\\
+1 & 0 & 0
+\end{array} \right],~~
+A_3=\left[
+\begin{array}{ccc}
+1 & 0 & 0\\
+0& 1 & 0
+\end{array} \right],~~A_4=\left[
+\begin{array}{ccc}
+1 & 0 & 0\\
+1& 0 & 0 \\
+0 & 1 & 0
+\end{array} \right], ~\text{and}~A_5=\left[
+\begin{array}{rrr}
+1& 0 & 0\\
+0 & 1 & 1\\
+0& 0 & 1
+\end{array} \right].
+$$
+
+\end{example}
+
+\textbf{Solution:} $A_1$ is not a permutation matrix because it has entries that are neither zero nor one, such $a_{12}=-1$ and $a_{23}=a_{31}=2$. $A_2$ is a permutation matrix because we can check that \textbf{each and every row and column} has precisely one $1$ and all other entries are $0$'s. In passing, we note that $A_2$ is not symmetric, and thus permutation matrices are not required to be symmetric. $A_3$ is not a permutation matrix because it's third column is all zeros; one could also say that it fails because it is not square. $A_4$ is $3 \times 3$ and has exactly $3$ entries equal to one and all the rest zero; however, it is not a permutation matrix because its first column has two ones. $A_5$ is not a permutation matrix because its second row has two ones; it also fails because its third column has two ones. 
+\Qed
+\vspace*{.1cm}
+
+\begin{tcolorbox}[sharp corners, colback=green!30, colframe=green!80!blue, title=\textbf{Inverting a Permutation Matrix is Cake}]
+If $P$ is a permutation matrix, then $P^\top \cdot P = P\cdot  P^\top = I$. In other words,  $$P^{-1}= P^\top. $$
+\end{tcolorbox}
+\vspace*{0.1cm}
+
+Here is one of the permutations we considered before where applying the permutation twice does not undo the swapping of rows,
+\begin{equation}
+\label{eq:PermuationRevisted}
+     \left[\begin{array}{r} 1 \\2 \\3 \\ 4 \\ 5\end{array} \right] \rightarrow \left[\begin{array}{r} 4 \\2 \\1 \\ 5 \\ 3\end{array} \right];
+\end{equation}
+see \eqref{eq:5by5permutationMatrix}. As we did before, we put the $5 \times 5$ identity matrix on the left and the corresponding permutation matrix $P$ on the right
+\begin{equation}
+\label{eq:PermuationRevisted02}
+I=\begin{bmatrix}
+1&0&0&0&0\\
+0&1&0&0&0\\
+0&0&1&0&0\\
+0&0&0&1&0\\
+0&0&0&0&1\\
+\end{bmatrix} \leftrightarrow
+P=\begin{bmatrix}
+0&0&1&0&0\\ %3 -> 1
+0&1&0&0&0\\ % 2 -> 2
+0&0&0&0&1\\ % 5 -> 3
+1&0&0&0&0\\ % 1 ->4
+0&0&0&1&0\\ % 4 -> 5
+\end{bmatrix} \leftrightarrow \left[\begin{array}{r} 3 \rightarrow 1 \\2 \rightarrow 2 \\5 \rightarrow 3 \\ 1 \rightarrow 4 \\ 4 \rightarrow 5\end{array} \right].
+\end{equation}
+The matrix $P$ is still just a re-ordering of the rows of $I$. We can check that $P$ is not a symmetric matrix by either applying the ``diagonal test'' indicated in \eqref{eq:DiagonalTestSymmetricMatrix}, or by computing the transpose 
+$$
+P^\top=\begin{bmatrix}
+0&0&0&1&0\\ %4 -> 1
+0&1&0&0&0\\ % 2 -> 2
+1&0&0&0&0\\ % 1 -> 3
+0&0&0&0&1\\ % 5 ->4
+0&0&1&0&0\\ % 3 -> 5
+\end{bmatrix}
+$$
+and noting that $P^\top \neq P$. Direct, albeit tedious multiplication gives that 
+\begin{align*}
+P \cdot P^\top &= e_4\cdot e_4^\top + e_2\cdot e_2^\top + e_1\cdot e_1^\top + e_5\cdot e_5^\top + e_3\cdot e_3^\top = I_5~\text{ and}\\
+P^\top \cdot P &= e_3\cdot e_3^\top + e_2\cdot e_2^\top + e_5\cdot e_5^\top + e_1\cdot e_1^\top + e_4\cdot e_4^\top = I_5,
+\end{align*}
+where $e_i$ is the $i$-th column of the identity matrix. Hence, computing the inverse of a permutation matrix is a snap!\\
+
+Below is a snippet of Julia code that shows how to take a desired permutation of rows and build the corresponding permutation matrix from the identity matrix. \\
+
+\textbf{Objective:}  Bring the fourth row to the top, leave the second row where it is, move the first row to the third row, move the fifth row to the fourth row, and move the third row to the last position. In other symbols,
+$$\left[\begin{array}{r} 4 \rightarrow 1 \\2 \rightarrow 2 \\1 \rightarrow 3 \\ 5 \rightarrow 4 \\ 3 \rightarrow 5\end{array} \right] $$
+\begin{lstlisting}[language=Julia]
+# Building a permutation matrix
+using LinearAlgebra
+p=[4, 2, 1, 5, 3]
+myI=zeros(5,5)+I
+P=myI[p,:]
+\end{lstlisting}
+\textbf{Output} we obtain the permutation matrix, $P$,
+\begin{verbatim}
+5×5 Matrix{Float64}:
+ 0.0  0.0  0.0  1.0  0.0
+ 0.0  1.0  0.0  0.0  0.0
+ 1.0  0.0  0.0  0.0  0.0
+ 0.0  0.0  0.0  0.0  1.0
+ 0.0  0.0  1.0  0.0  0.0
+ \end{verbatim}
+We illustrate two ways to permute the elements of a column vector, similar to what we saw in Chapter~\ref{sec:nativeLUcommand},
+ \begin{lstlisting}[language=Julia]
+b=[1 2 3 4 5]'
+[b b[p] P*b]
+\end{lstlisting}
+\textbf{Output} yielding,
+\begin{verbatim}
+5×3 Matrix{Float64}:
+ 1.0  4.0  4.0
+ 2.0  2.0  2.0
+ 3.0  1.0  1.0
+ 4.0  5.0  5.0
+ 5.0  3.0  3.0
+ \end{verbatim}
+ so that we see once again that $b[p]=P*b$. 
+ 
+ \section{Matrix Determinants, Matrix Inverses, and the Matrix Transpose}
+ 
+ Our final useful facts of the Chapter deal with the transpose of a square matrix.
+ 
+ \vspace*{0.2cm}
+
+
+\begin{tcolorbox}[title=\textbf{Determinant and Matrix Inverse of $A^\top$}]
+Some useful facts:
+
+\begin{itemize}
+    \item For any $n \times n$ square matrix  $A$, $\det(A^\top) = \det(A)$. 
+    \item Hence, if $A$ is invertible, then so is its transpose. 
+    \item Moreover, when $\det(A) \neq 0$, the inverse of $A^\top$ is the transpose of the inverse of $A$, that is
+$$\left(A^\top\right)^{-1} =  \left(A^{-1}\right)^{\top}.$$
+\end{itemize}
+\textbf{Remark:} Because the order does not matter when inverting and transposing a matrix, one often writes $A^{-\top}$ for $\left(A^\top\right)^{-1}$.
+\end{tcolorbox}
+\vspace*{0.2cm}
+
+\textbf{(Optional Read:)} Even though proofs are not a big thing in ROB 101, we'll sketch out the reasoning for these two facts. \\
+
+We recall that by the definition of a matrix inverse, it must satisfy $A \cdot A^{-1} = A^{-1} \cdot A  = I_n$. By the product rule for the matrix transpose, we have that 
+$$\left(A^{-1}\right)^\top \cdot A ^\top = \left(A \cdot A^{-1}\right)^\top  =  \left(A^{-1}  \cdot A\right)^\top = A^\top \cdot  \left(A^{-1} \right)^\top =  I_n^\top = I_n. $$
+Because 
+$$\left(A^{-1}\right)^\top \cdot A ^\top = A^\top \cdot  \left(A^{-1} \right)^\top = I_n,$$
+we deduce that $\left(A^\top\right)^{-1} =  \left(A^{-1}\right)^{\top}$.\\
+
+For the next part, we will need to use one fact that we have not covered in the book, namely, if $P$ is a permutation matrix, then $\det(P)=\det(P^\top) = \pm 1.$ Suppose that $A$ is square and perform its LU Factorization, $P\cdot A = L \cdot U$. Then, multiplying both sides by $P^\top$ and using $P^\top \cdot P = I_n$, we have $ A = P^\top \cdot L \cdot U.$ Hence, by the product rule of determinants, we have that
+$$\det(A) = \det(P^\top) \cdot \det(L) \cdot \det(U) = \det(P^\top) \cdot\det(U) = \det(P)  \cdot\det(U) , $$
+where we used $\det(L)=1$ (because $L$ is uni-lower-triangular) and $\det(P^\top)=\det(P)$. Next, we note that $A^\top = U^\top \cdot L^\top \cdot P$, using the product rule for the matrix transpose. Hence, 
+$$\det(A^\top) = \det(U^\top) \cdot \det(L^\top) \cdot \det(P).$$
+The transpose operation takes $U$ to a lower-triangular matrix with $\diag(U) = \diag(U^\top)$ and hence $\det(U) = \det(U^\top)$. Similarly, the transpose operation takes $L$ to a uni-upper-triangular matrix with $\diag(L) = \diag(L^\top)$ and hence $\det(L) = \det(L^\top)=1$. We conclude that 
+\begin{align*}
+\det(A) &= \det(P) \cdot \det(U) \\
+\det(A^\top) &= \det(U) \cdot \det(P),
+\end{align*}
+and hence, $\det(A^\top) = \det(A) = \pm \det(U).$
+
+\section{Looking Ahead}
+
+You have now seen the most important material for solving systems of linear equations. You have been cautioned about the \textbf{``theory vs practice gap''} when it comes to computing matrix inverses. In fact, your instructors often say, with a mix of seriousness and joking, that ``we don't hang out with people who compute matrix inverses.'' The purpose of the statement is to drive home the fact that computing a matrix inverse is a numerically delicate operation and is often a sloppy way to solve a real problem with many variables. for ``toy problems'' typically seen in lower-level courses, sure, you can use the matrix inverse and not suffer any adverse consequences. \textbf{But, did you come to Michigan to learn how to solve toy problems?} \\
+
+Our next task is to develop a deeper understanding of vectors and special sets built out of vectors, called ``vector spaces.'' We'll learn about linear independence, basis vectors, dimension, as well as how to measure the size of a vector and the distance between two vectors. \textbf{This knowledge will allow us to analyze systems of linear equations $Ax=b$ that do not have an exact solution!} Right now, this might seem bizarre: if you already know there is not an exact solution, what could you possibly be analyzing? We will be seeking an approximate answer that minimizes the error in the solution, where the error is defined as
+$$e:= Ax-b.$$
+We seek a value of $x$ that makes $e$ as ``small as possible in magnitude''. \textcolor{red}{\bf In Robotics as in life, most interesting problems do not have exact answers. The goal is then to find approximate answers that are good enough!} 

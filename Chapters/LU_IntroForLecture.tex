@@ -1,0 +1,203 @@
+\begin{center}
+    Material added by JWG on 16 Sept 2020
+\end{center}
+
+Suppose we have 
+\begin{equation}
+A=\left[
+\begin{array}{rrr}
+2.0 & 3.0 & 4.0 \\
+6.0 & 14.0 & 15.0 \\
+-4.0 & -11.0 & -7.0 \\
+\end{array}
+\right]
+\end{equation}
+and we wish to solve $Ax=b$
+for 
+\begin{equation}
+b=\left[
+\begin{array}{r}
+20.0 \\
+79.0 \\
+-47.0 \\
+\end{array}
+\right]
+\end{equation}
+
+\textbf{\LARGE We would go sigh, what a pain!} \\
+
+What if we knew that 
+
+\begin{equation}
+\underbrace{\left[
+\begin{array}{rrr}
+2.0 & 3.0 & 4.0 \\
+6.0 & 14.0 & 15.0 \\
+-4.0 & -11.0 & -7.0 \\
+\end{array}
+\right]}_{A} = 
+\underbrace{\left[
+\begin{array}{rrr}
+1.0 & 0.0 & 0.0 \\
+3.0 & 1.0 & 0.0 \\
+-2.0 & -1.0 & 1.0 \\
+\end{array}
+\right]}_{L} \cdot \underbrace{\left[
+\begin{array}{ccc}
+2.0 & 3.0 & 4.0 \\
+0.0 & 5.0 & 3.0 \\
+0.0 & 0.0 & 4.0 \\
+\end{array}
+\right]}_{U}
+\end{equation}
+
+\vspace*{1cm}
+\textbf{\LARGE Could we use this to our advantage?}
+\newpage
+Let's write out $Ax = b$ using $A=L \cdot U$
+
+\begin{equation}
+\underbrace{\left[
+\begin{array}{rrr}
+1.0 & 0.0 & 0.0 \\
+3.0 & 1.0 & 0.0 \\
+-2.0 & -1.0 & 1.0 \\
+\end{array}
+\right]}_{L} \cdot \underbrace{\left[
+\begin{array}{ccc}
+2.0 & 3.0 & 4.0 \\
+0.0 & 5.0 & 3.0 \\
+0.0 & 0.0 & 4.0 \\
+\end{array}
+\right]}_{U} \underbrace{\left[\begin{array}{c} x_1 \\ x_2 \\x_3 \end{array}\right]}_{x}= 
+\underbrace{\left[
+\begin{array}{c}
+20.0 \\
+79.0 \\
+-47.0 \\
+\end{array}
+\right]}_{b}
+\end{equation}
+\vspace*{2cm}
+
+\textbf{\LARGE Our unknown is x. Let's define an intermediate unknown y=U x}
+
+\vspace*{2cm}
+
+\begin{equation}
+\underbrace{\left[
+\begin{array}{rrr}
+1.0 & 0.0 & 0.0 \\
+3.0 & 1.0 & 0.0 \\
+-2.0 & -1.0 & 1.0 \\
+\end{array}
+\right]}_{L} \cdot \underbrace{ \underbrace{\left[
+\begin{array}{ccc}
+2.0 & 3.0 & 4.0 \\
+0.0 & 5.0 & 3.0 \\
+0.0 & 0.0 & 4.0 \\
+\end{array}
+\right]}_{U} \underbrace{\left[\begin{array}{c} x_1 \\ x_2 \\x_3 \end{array}\right]}_{x}}_{y}= 
+\underbrace{\left[
+\begin{array}{c}
+20.0 \\
+79.0 \\
+-47.0 \\
+\end{array}
+\right]}_{b}
+\end{equation}
+
+\vspace*{2cm}
+
+\textbf{\LARGE Which gives}
+
+\begin{equation}
+\underbrace{\left[
+\begin{array}{rrr}
+1.0 & 0.0 & 0.0 \\
+3.0 & 1.0 & 0.0 \\
+-2.0 & -1.0 & 1.0 \\
+\end{array}
+\right]}_{L}  \underbrace{\left[\begin{array}{c} y_1 \\ y_2 \\y_3 \end{array}\right]}_{y}= 
+\underbrace{\left[
+\begin{array}{c}
+20.0 \\
+79.0 \\
+-47.0 \\
+\end{array}
+\right]}_{b}
+\end{equation}
+
+\textbf{\LARGE and hence}
+\begin{equation}
+\begin{aligned}
+y_1 &= 20.0\\
+y_2 &= 79.0 - 3 y_1 = 79.0 - 60.0 = 19.0 \\
+y_3 &= -47.0 + 2.0 y_1 + y_2 = -47.0 + 00.0 + 19.0= 12.0
+\end{aligned}
+\end{equation}
+
+\newpage
+
+\textbf{\LARGE Now we can use U x = y to solve for x}
+
+
+\vspace*{2cm}
+
+\begin{equation}
+    \underbrace{\left[
+\begin{array}{ccc}
+2.0 & 3.0 & 4.0 \\
+0.0 & 5.0 & 3.0 \\
+0.0 & 0.0 & 4.0 \\
+\end{array}
+\right]}_{U} \underbrace{\left[\begin{array}{c} x_1 \\ x_2 \\x_3 \end{array}\right]}_{x} = \underbrace{\left[\begin{array}{c} y_1 \\ y_2 \\y_3 \end{array}\right]}_{y} = \left[\begin{array}{c}20.0 \\ 19.0\\12.0 \end{array}\right]
+\end{equation}
+
+\vspace*{2cm}
+
+\textbf{\LARGE which gives}
+
+\vspace*{2cm}
+
+\begin{equation}
+\begin{aligned}
+2.0 x_1 &= 20.0 - 3.0 x_2 - 4.0 x_3 \implies x_1 = \frac{20.0 - (3.0)(2.0)-(4.0)(3.0)}{2.0} = 1.0 \bigskip\\
+5.0 x_2 &= 19.0 - 3.0 x_3 \implies x_2 = \frac{19.0 - (3.0)(3.0)}{5} = 2.0 \bigskip \\
+4.0 x_3 &= 12.0 \implies x_3 = 3.0
+\end{aligned}
+\end{equation}
+
+
+\vspace*{2cm}
+
+\textbf{\LARGE Reminder of why this works: Ax = b and A = L $\cdot$ U gives}
+
+\begin{equation}
+\underbrace{\left[
+\begin{array}{rrr}
+1.0 & 0.0 & 0.0 \\
+3.0 & 1.0 & 0.0 \\
+-2.0 & -1.0 & 1.0 \\
+\end{array}
+\right]}_{L} \cdot \underbrace{ \underbrace{\left[
+\begin{array}{ccc}
+2.0 & 3.0 & 4.0 \\
+0.0 & 5.0 & 3.0 \\
+0.0 & 0.0 & 4.0 \\
+\end{array}
+\right]}_{U} \underbrace{\left[\begin{array}{c} x_1 \\ x_2 \\x_3 \end{array}\right]}_{x}}_{y}= 
+\underbrace{\left[
+\begin{array}{r}
+20.0 \\
+79.0 \\
+-47.0 \\
+\end{array}
+\right]}_{b}
+\end{equation}
+
+
+
+
+\newpage
+

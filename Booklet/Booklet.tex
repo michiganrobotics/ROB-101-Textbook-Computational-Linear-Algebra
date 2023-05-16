@@ -1,0 +1,186 @@
+\documentclass[letterpaper]{book}
+\PassOptionsToPackage{usenames,dvipsnames,svgnames,table,xcdraw}{xcolor}
+\PassOptionsToPackage{dvipsnames,svgnames,table,xcdraw}{enumitems}
+
+\input{Defines/definesPackages}
+\input{Defines/definesCommands}
+\input{Defines/definesJuliaCodeCell}
+%\parindent
+
+\makeatletter
+\renewcommand{\frontmatter}{\cleardoublepage\@mainmatterfalse}
+\renewcommand{\mainmatter}{\cleardoublepage\@mainmattertrue}
+\makeatother
+
+\title{Notes for Computational Linear Algebra\thanks{Inspired by Prof. Chad Jenkins}}
+\date{}
+\author{Jessy Grizzle\\ Robotics Institute, University of Michigan, Ann Arbor
+\and Content contributed by Maani, Tribhi, Miley, Madhav, Kira, Michael, and Bruce}
+
+%\doublespacing
+
+
+
+\begin{document}
+%\maketitle
+\newtheorem{example}{Example}
+\numberwithin{example}{chapter}
+
+\begingroup
+\thispagestyle{empty}
+
+\AddToShipoutPicture*{\put(0,0)  {\includegraphics[scale=1.0]{rob101-cover-12-2020.png}}} % Image background
+\mbox{  }
+
+\endgroup
+
+\clearpage
+
+
+\begingroup
+\thispagestyle{empty}
+%\centerline
+% \AddToShipoutPicture*{\put(240,50)  {\includegraphics[scale=0.35]{media_users_user_14_project_222374_images_res_cassie_image.png}}} % Image background
+\AddToShipoutPicture*{\put(40,450)  {\includegraphics[scale=0.35]{WorkTogether.png}}} % Image background
+
+
+~\vfill
+\thispagestyle{empty}
+\noindent Cover design by Dan Newman, Head of Communications, Michigan Robotics
+
+\vspace*{2cm}
+\noindent\copyright\space 2022, 2021, 2020	Jessy Grizzle,  former Director of Robotics, University of Michigan	\\
+\noindent \textsc{Jerry W. and Carol L. Levin Professor of Engineering\\
+Elmer G. Gilbert Distinguished University Professor\\
+Professor of EECS and ME}\\
+
+%\noindent \textsc{github.com/LaurethTeX/Clustering}\\ % URL
+
+\noindent Composed between April 2020 and August 2020 for use in ROB 101, Computational Linear Algebra, a first-semester first-year course. Revised Fall 2020 when put to the test with our Pilot Class. Revised Summer and Fall 2021. Extensive proof reading provided by 
+Muhsinun Chowdhury in Fall 2022. 
+\\ % License information
+
+\noindent \textit{First release, August 31, 2020. Second release, August 30, 2021. Third release August 29, 2022.} % Printing/edition date
+
+
+\endgroup
+
+\frontmatter
+\tableofcontents
+\chapter{Preface}
+\input{Chapters/Preface.tex}
+\chapter{Philosophy of the Course}
+\input{Chapters/Philosophy.tex}
+\chapter{List of Algorithms and Methods or Things You Need Code to Do Well}
+\input{Chapters/ListAlgorithms.tex}
+\mainmatter
+
+\chapter{Introduction to  Systems of Linear Equations}
+\label{chap:Intro}
+\input{Chapters/Chap01IntroLinearSystemsEquations.tex}
+
+\chapter{Vectors, Matrices, and Determinants}
+\label{chap:Chap02VectorsMatricesDeterminants}
+\input{Chapters/Chap02VectorsMatricesDeterminants.tex}
+
+\chapter{Triangular Systems of Equations: Forward and Back Substitution}
+\label{chap:Chap03TriangularForwardBAckSubstitution}
+\input{Chapters/Chap03TriangularSystemsEquations.tex}
+
+\chapter{Matrix Multiplication}
+\label{chap:MatrixMultiplication}
+\input{Chapters/Chap04MatrixMultiplication.tex}
+
+\chapter{LU (Lower-Upper) Factorization}
+\label{chap:LUfactorization}
+\input{Chapters/Chap05LUdecomposition.tex}
+
+\chapter{Determinant of a Matrix Product, Matrix Inverses, Matrix Transposes, and Permutation Matrices}
+\label{chap:MatrixProductInversesDeterminants}
+\input{Chapters/Chap06DeterminantMatrixInverse.tex}
+
+\chapter{The Vector Space $\mathbf{R^n}$: Part 1}
+\label{chap:Chap07VectorSpaceRnPart1}
+\input{Chapters/Chap07VectorSpaceRnPart1.tex}
+
+\chapter{Euclidean Norm, Least Squared Error Solutions to Linear Equations, and Linear Regression}
+\label{chap:NormRegression}
+\input{Chapters/Chap08NormLinearRegression.tex}
+
+\chapter{The Vector Space  $\mathbf{R^n}$: Part 2}
+\label{chap:Rnpart2}
+\input{Chapters/Chap09VectorSpaceRnPart2.tex}
+
+\chapter{The Vector Space  $\mathbf{R^n}$: Part 3}
+\label{chap:matrixFacts}
+\input{Chapters/Chap10VectorSpaceRnPart3DimensionRankNullityEvectors.tex}
+
+\chapter{Changing Gears: Solutions of Nonlinear Equations}
+\label{chap:NonlinearEquations}
+\input{Chapters/Chap11NonlinearEquationsNewtonRaphson.tex}
+
+\chapter{Changing Gears Again: Basic Ideas of Optimization}
+\label{chap:Optimization}
+\input{Chapters/Chap12Optimization.tex}
+
+
+\chapter{Background for Classification and Machine Learning}
+\label{chap:Background3MachineLearning}
+\input{Chapters/Chap13MachineLearningBackground.tex}
+
+\pagestyle{plain}
+
+\newpage
+
+\appendix
+
+\chapter{To Learn on Your Own (if you want to): Cool and Important Things We Omitted From our Linear Algebra Introduction}
+\input{Chapters/CoolThings.tex}
+
+
+\chapter{What is an Ordinary Differential Equation?}
+\label{chap:ODE}
+\input{Chapters/ODE.tex}
+
+\newpage
+\vspace*{6cm}
+
+\begin{center}
+{\Huge \textcolor{red}{\bf From here on, the book is a work in progress. Please pardon our mess during construction!}}
+\end{center}
+
+\newpage
+
+\chapter{Camera and LiDAR Models for Students of Robotics}
+\label{chap:Senors}
+
+\section*{Learning Objectives}
+\begin{itemize}
+\item \jwg{???}. 
+\end{itemize}
+
+\section*{Outcomes}
+\begin{itemize}
+\item \jwg{???}
+\end{itemize}
+
+
+\vspace*{1.5cm}
+
+
+\newpage
+
+\jwg{Jessy to write an Intro. Bruce to add background on LiDAR sensors} 
+
+\section{Pinhole Camera Model}
+\label{chap:Camera}
+
+\input{Chapters/Camera.tex}
+
+\section{Projection Map from LiDAR to Camera}
+\label{chap:ProjectionMap}
+\input{Chapters/ProjectionMap.tex}
+
+
+\end{document}
+

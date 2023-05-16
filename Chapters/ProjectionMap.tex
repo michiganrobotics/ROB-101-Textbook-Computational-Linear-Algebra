@@ -1,0 +1,80 @@
+% \section*{Learning Objectives}
+% \begin{itemize}
+% \item \jwg{???}. 
+% \end{itemize}
+
+% \section*{Outcomes}
+% \begin{itemize}
+% \item \jwg{???}
+% \end{itemize}
+
+
+% \vspace*{1.5cm}
+
+
+
+
+
+% \newpage
+\section{Projection Map}
+\label{sec:ProjectionMap}
+The projection map is a mapping between a 3D and a 2D world, and is used to project a LiDAR
+point cloud (3D) into an image (2D). Let $X$ be the LiDAR points and $Y$ be the
+projected points on the image-plane of a camera. The standard relations are \footnote{More information
+    about the projection map, we refer the readers to ``
+\href{}{Multiple view geometry in computer vision second
+edition},'' by Hartley Richard and Zisserman Andrew, and ``\href{}{Computer vision: a
+modern approach},'' by Forsyth David A and Ponce Jean.} 
+\begin{align}
+    \label{eq:projection_linear}
+    \begin{bmatrix}
+        u^\prime\\
+        v^\prime\\
+        w^\prime
+    \end{bmatrix} &=
+    \underbrace{\begin{bmatrix}
+        f_x & s & c_x \\
+        0 & f_y & c_y \\
+        0 & 0 & 1
+    \end{bmatrix}}_{\text{intrinsic parameters}}
+    \begin{bmatrix}
+    \mathbb{1}_{3\times3} \\ \zeros[1\times3]
+    \end{bmatrix}^\transpose
+    \underbrace{\begin{bmatrix}
+        R_L^C & t_L^C \\
+        \zeros[1\times 3] & 1 \\
+    \end{bmatrix}}_{\text{extrinsic parameters}}
+    \underbrace{\begin{bmatrix}
+        x_i \\
+        y_i \\
+        z_i \\
+        1
+    \end{bmatrix}}_{\text{LiDAR points}}\\
+    &= K \begin{bmatrix}
+    \mathbb{1}_{3\times3} \\ \zeros[1\times3]
+    \end{bmatrix}^\transpose H_L^C 
+    \begin{bmatrix}
+        x_i \\
+        y_i \\
+        z_i \\
+        1
+    \end{bmatrix}\\
+    \label{eq:projection_nonlinear}
+    Y_i &= \begin{bmatrix}
+        u & v & 1
+    \end{bmatrix}^{\transpose} =
+    \begin{bmatrix}
+        \frac{u^\prime}{w^\prime} & \frac{v^\prime}{w^\prime} & 1
+    \end{bmatrix}^{\transpose},
+\end{align}
+where \eqref{eq:projection_linear} includes the camera's intrinsic parameters ($K$) and the
+extrinsic parameters $(R_L^C, T_L^C)$.
+
+For later use, we combine \eqref{eq:projection_linear} and \eqref{eq:projection_nonlinear} to define
+\begin{equation}
+\label{eq:Projection}
+\Pi\left(X_i; R, t \right):=Y_i,
+\end{equation}
+the projection map from LiDAR coordinates to image coordinates. Note that it is
+a function of both the extrinsic variables and the LiDAR vertices.
+
